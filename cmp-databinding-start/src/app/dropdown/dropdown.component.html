@@ -1,0 +1,4 @@
+<select [(ngModel)]="selectedValue" (ngModelChange)="sendRequest()">
+    <option [value]="yearlyInvUrl">Yearly</option>
+    <option [value]="monthlyInvUrl">Monthly</option>
+  </select>
