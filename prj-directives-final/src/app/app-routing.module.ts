@@ -7,6 +7,7 @@ import {RecipeListComponent} from "./recipes/recipe-list/recipe-list.component";
 import {ShoppingEditComponent} from "./shopping-list/shopping-edit/shopping-edit.component";
 
 const  appRoutes: Routes = [
+  {path: '', redirectTo: '/recipes', pathMatch: 'full'},
   {path: 'recipes', component: RecipesComponent, children: [
       {path: ':id/detail', component: RecipeDetailComponent},
       {path: 'list', component: RecipeListComponent, children: [
