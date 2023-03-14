@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 
 
 import { AppComponent } from './app.component';
+import { WordShortenerPipe } from './pipes/word-shortener.pipe';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    WordShortenerPipe
   ],
   imports: [
     BrowserModule,
