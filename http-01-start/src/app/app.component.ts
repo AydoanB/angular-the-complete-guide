@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {Component, OnInit} from '@angular/core';
+import {HttpService} from "./http.service";
+import {IPost} from "./PostModel";
 
 @Component({
   selector: 'app-root',
@@ -7,22 +8,43 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  loadedPosts = [];
+  loadedPosts: IPost[] = [];
+  isFetching: boolean = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private httpService: HttpService) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   onCreatePost(postData: { title: string; content: string }) {
-    // Send Http request
-    console.log(postData);
+    this.httpService.error.subscribe(e=>console.log(e))
+
+    this.httpService
+      .addPost(postData);
+    setTimeout(()=>{
+      this.onFetchPosts();
+    }, 35)
   }
 
   onFetchPosts() {
-    // Send Http request
+    this.isFetching = true;
+
+    this.httpService
+      .getPosts()
+      .subscribe((posts: IPost[]) => {
+          this.loadedPosts = posts;
+          this.isFetching = false;
+      }, error => {
+        this.isFetching = false;
+        console.log(error)
+      });
   }
 
   onClearPosts() {
-    // Send Http request
+    this.loadedPosts = [];
+    this.httpService
+      .deletePosts()
+      .subscribe(resp => console.log(resp));
   }
 }
