@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Recipe} from "./recipe.model";
 import {Ingredient} from "../shared/ingredient.model";
+import {Subject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,8 @@ export class RecipeService {
       [new Ingredient('Meso', 20), new Ingredient('Yumurta', 5)])
   ];
 
+  recipesChanged: Subject<Recipe[]> = new Subject<Recipe[]>();
+
   constructor() {
   }
 
@@ -26,5 +29,10 @@ export class RecipeService {
 
   getRecipeById(Id: number): Recipe {
     return this.recipes[Id];
+  }
+
+  fetchRecipes(recipes: Recipe[]){
+    this.recipes = recipes;
+    this.recipesChanged.next(this.recipes.slice());
   }
 }
