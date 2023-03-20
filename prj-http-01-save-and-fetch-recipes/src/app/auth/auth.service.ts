@@ -38,7 +38,7 @@ export class AuthService {
 
     Object.assign(signInUser, user);
 
-    return this.http.post(signInUrl, signInUser).pipe(catchError(this.handleError), tap(respData =>{
+    return this.http.post(signInUrl, signInUser).pipe(catchError(this.handleError), tap(respData => {
       this.handleAuth(respData);
     }));
   }
@@ -62,18 +62,32 @@ export class AuthService {
     return throwError(message);
   }
 
-  logout(){
+  logout() {
     this.user.next(null);
     this.router.navigate(['/sign-up']);
   }
 
+  autoLogin(): User {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    if (!userData) {
+      return;
+    }
+    const loadedUser = new User(userData['email'], userData['id'], userData['_token'], new Date(userData['_tokenExpDate']))
+
+    if(loadedUser.token){
+      this.user.next(loadedUser);
+    }
+  }
+
   private handleAuth(respData: {}) {
     const expirationDate = new Date(new Date().getDate() + +respData['expiresIn'] * 1000);
-    const user = new User(
+    const user =  new User(
       respData['email'],
       respData['localId'],
       respData['idToken'],
       expirationDate);
+
+    localStorage.setItem('userData', JSON.stringify(user));
 
     this.user.next(user);
   }
