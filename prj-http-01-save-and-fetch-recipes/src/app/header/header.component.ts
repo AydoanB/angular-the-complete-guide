@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
-import {Router} from "@angular/router";
 
 import {DataStorageService} from '../shared/data-storage.service';
 import {AuthService} from "../auth/auth.service";
@@ -13,7 +12,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private userSub: Subscription;
   isAuthenticated: boolean = false;
 
-  constructor(private dataStorageService: DataStorageService, private authService: AuthService, private router: Router) {
+  constructor(private dataStorageService: DataStorageService, private authService: AuthService) {
   }
 
   onSaveData() {
@@ -34,9 +33,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.userSub.unsubscribe();
   }
 
-
   onLogout() {
-    this.isAuthenticated = false;
-    this.router.navigate(['/sign-up']);
+    this.authService.logout();
   }
 }
