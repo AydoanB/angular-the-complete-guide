@@ -3,7 +3,8 @@ import {environment as env} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {User} from "../shared/user.model";
 import {catchError, tap} from "rxjs/operators";
-import {Subject, throwError} from "rxjs";
+import {BehaviorSubject, throwError} from "rxjs";
+import {Router} from "@angular/router";
 
 const signUpUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${env.firebaseApiKey}`;
 const signInUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${env.firebaseApiKey}`;
@@ -12,9 +13,10 @@ const signInUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWith
   providedIn: 'root'
 })
 export class AuthService {
-  user = new Subject<User>();
+  user = new BehaviorSubject<User>(null);
 
-  constructor(private http: HttpClient) {
+
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   signUp(user: User) {
@@ -58,6 +60,11 @@ export class AuthService {
     }
 
     return throwError(message);
+  }
+
+  logout(){
+    this.user.next(null);
+    this.router.navigate(['/sign-up']);
   }
 
   private handleAuth(respData: {}) {
