@@ -14,7 +14,7 @@ const signInUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWith
 })
 export class AuthService {
   user = new BehaviorSubject<User>(null);
-
+  private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient, private router: Router) {
   }
@@ -65,6 +65,17 @@ export class AuthService {
   logout() {
     this.user.next(null);
     this.router.navigate(['/sign-up']);
+    localStorage.removeItem('userData');
+
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+    }
+  }
+
+  autoLogout(expirationDuration: number) {
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.logout();
+    }, expirationDuration)
   }
 
   autoLogin(): User {
@@ -74,18 +85,23 @@ export class AuthService {
     }
     const loadedUser = new User(userData['email'], userData['id'], userData['_token'], new Date(userData['_tokenExpDate']))
 
-    if(loadedUser.token){
+    if (loadedUser.token) {
       this.user.next(loadedUser);
+
+      const expirationDuration = new Date(userData._tokenExpDate).getTime() - new Date().getTime()
+      //this.autoLogout(expirationDuration);
     }
   }
 
   private handleAuth(respData: {}) {
-    const expirationDate = new Date(new Date().getDate() + +respData['expiresIn'] * 1000);
-    const user =  new User(
+    const expirationDate = new Date(Date.now() + (1000 * 3600) + +respData['expiresIn'] * 1000);
+    const user = new User(
       respData['email'],
       respData['localId'],
       respData['idToken'],
       expirationDate);
+
+    //this.autoLogout(+expirationDate  * 1000);
 
     localStorage.setItem('userData', JSON.stringify(user));
 

@@ -11,9 +11,9 @@ export class User {
   }
 
   get token() {
-    // if (!this._tokenExpDate || new Date() > this._tokenExpDate) {
-    //   return null;
-    // }
+    if (!this._tokenExpDate || new Date(new Date().getTime()) > this._tokenExpDate) {
+      return null;
+    }
     return this._token;
   }
 }
