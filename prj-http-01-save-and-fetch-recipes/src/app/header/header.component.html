@@ -18,7 +18,8 @@
           </ul>
         </li>
         <li routerLink="/sign-up">
-          <a style="cursor: pointer;" role="button">{{!this.isAuthenticated ? 'Sign up' : 'Logout'}} <span *ngIf="isAuthenticated" (click)="onLogout()"></span></a>
+          <a style="cursor: pointer;" (click)="onLogout()" role="button" *ngIf="isAuthenticated">Logout</a>
+          <a style="cursor: pointer;" (click)="onLogin()" role="button" *ngIf="!isAuthenticated">Sign In</a>
         </li>
       </ul>
     </div>
