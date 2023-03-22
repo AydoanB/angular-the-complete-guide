@@ -37,8 +37,7 @@ export class AuthComponent implements OnInit {
       obs = this.authService.signUp(user);
     }
 
-    obs.subscribe((response) => {
-      console.log(response);
+    obs.subscribe(() => {
       this.isLoading = false;
 
       this.router.navigate(['/recipes']);
